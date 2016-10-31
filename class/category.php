@@ -111,7 +111,7 @@ class Category {
                 return json_encode($result);
             }
             if (is_int($post['id']) && !empty($post['id'])) {
-                $query = 'select * from categories where id = ' . $post['id'];
+                $query = 'select id from categories where id = ' . $post['id'];
                 $resultArray = mysql_query($query);
                 $dataArray = mysql_fetch_assoc($resultArray);
                 if (empty($dataArray['id'])) {

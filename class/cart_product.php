@@ -36,19 +36,19 @@ class Cart_product{
                 $result['message'] = 'Product id should be numeric only.';
                 return json_encode($result);
             }
-            $query = 'select * from products where is_active = 1 and id = ' . $post['product'];
+            $query = 'select id from products where is_active = 1 and id = ' . $post['product'];
             $resultArray = mysql_query($query);
             $productArray = mysql_fetch_assoc($resultArray);
-            if(empty($productArray)){
+            if(empty($productArray['id'])){
                 $result['code'] = '105';
                 $result['message'] = 'Product does not exist.';
                 return json_encode($result);
             }
-            $query = 'select * from categories where is_active = 1 and id = ' . $productArray['categories_id'];
+            $query = 'select id from categories where is_active = 1 and id = ' . $productArray['categories_id'];
             $resultArray = mysql_query($query);
             $categoryArray = mysql_fetch_assoc($resultArray);
-            if(empty($categoryArray)){
-                $result['code'] = '105';
+            if(empty($categoryArray['id'])){
+                $result['code'] = '106';
                 $result['message'] = 'Category does not exist.';
                 return json_encode($result);
             }
@@ -63,7 +63,7 @@ class Cart_product{
             $result['code'] = '110';
             $result['message'] = 'Product saved successfully.';
         }else{
-            $result['code'] = '106';
+            $result['code'] = '107';
             $result['message'] = 'Insufficient parameters';
         }
             return json_encode($result);
@@ -86,11 +86,11 @@ class Cart_product{
                 return json_encode($result);
             }
             if(is_numeric($post['id'])&& !empty($post['id'])){
-                $query = 'select * from cart_products where id = '. $post['id']; 
+                $query = 'select id from cart_products where id = '. $post['id']; 
                 $resultArray = mysql_query($query);
                 $dataArray = mysql_fetch_assoc($resultArray);
                 if(empty($dataArray['id'])){
-                    $result['code'] = '62';
+                    $result['code'] = '112';
                     $result['message'] = 'Product does not exist.';
                     return json_encode($result);
                 }
@@ -101,7 +101,7 @@ class Cart_product{
             $result['code'] = '120';
             $result['message'] = 'Product deleted successfully.';
         }else{
-            $result['code'] = '112';
+            $result['code'] = '113';
             $result['message'] = 'Insufficient parameters';
         }
         return json_encode($result);
@@ -115,11 +115,11 @@ class Cart_product{
                 return json_encode($result);
             }
             if(!empty($post['id'])){
-                $query = 'select * from carts where id = '. $post['id']; 
+                $query = 'select id from carts where id = '. $post['id']; 
                 $resultArray = mysql_query($query);
                 $cartArray = mysql_fetch_assoc($resultArray);
                 if(empty($cartArray['id'])){
-                    $result['code'] = '132';
+                    $result['code'] = '122';
                     $result['message'] = 'Cart does not exist.';
                     return json_encode($result);
                 }
@@ -127,7 +127,7 @@ class Cart_product{
             $total_discount = 0;
             $total_tax = 0;
             $total_price = 0; 
-            $query = "select cp.discount,cp.tax,cp.price,products.name,carts.name
+            $query = "select cp.discount,cp.tax,cp.price,products.name,carts.name as cartname
                 from cart_products as cp " . 
                      " inner join products on cp.products_id = products.id ".
                      " inner join carts on cp.carts_id = carts.id where products.is_active = 1 and cp.carts_id = ".$this->clean_input($post['id']); 
@@ -138,7 +138,9 @@ class Cart_product{
                 $total_discount = $total_discount + $row['discount'];
                 $total_tax = $total_tax + $row['tax'];
                 $total_price = $total_price + $row['price'];
+                $cartname = $row['cartname'];
             } 
+            $dataArray['cart_name'] =  $cartname;
             $dataArray['grand_total'] =  $total_discount + $total_tax + $total_price;
             $dataArray['total_discount'] =  $total_discount;
             $dataArray['total_tax'] =  $total_tax;
@@ -163,7 +165,7 @@ class Cart_product{
                 return json_encode($result);
             }
             if(!empty($post['id'])){
-                $query = 'select * from carts where id = '. $post['id']; 
+                $query = 'select id from carts where id = '. $post['id']; 
                 $resultArray = mysql_query($query);
                 $cartArray = mysql_fetch_assoc($resultArray);
                 if(empty($cartArray['id'])){
@@ -194,7 +196,7 @@ class Cart_product{
                 return json_encode($result);
             }
             if(!empty($post['id'])){
-                $query = 'select * from carts where id = '. $post['id']; 
+                $query = 'select id from carts where id = '. $post['id']; 
                 $resultArray = mysql_query($query);
                 $cartArray = mysql_fetch_assoc($resultArray);
                 if(empty($cartArray['id'])){
@@ -225,7 +227,7 @@ class Cart_product{
                 return json_encode($result);
             }
             if(!empty($post['id'])){
-                $query = 'select * from carts where id = '. $post['id']; 
+                $query = 'select id from carts where id = '. $post['id']; 
                 $resultArray = mysql_query($query);
                 $cartArray = mysql_fetch_assoc($resultArray);
                 if(empty($cartArray['id'])){

@@ -41,6 +41,16 @@ class Product{
                 $result['message'] = 'Category must be integer only.';
                 return json_encode($result);
             } 
+            if (is_int($post['category'])) {
+                $query = 'select id from categories where id = ' . $post['category'];
+                $resultArray = mysql_query($query);
+                $dataArray = mysql_fetch_assoc($resultArray);
+                if (empty($dataArray['id'])) {
+                    $result['code'] = '161';
+                    $result['message'] = 'Category does not exist.';
+                    return json_encode($result);
+                }
+            }
             if(empty($post['price'])){
                 $result['code'] = '46';
                 $result['message'] = 'Price can not be empty.';
@@ -101,6 +111,16 @@ class Product{
                 $result['code'] = '55';
                 $result['message'] = 'Category must be integer only.';
                 return json_encode($result);
+            }
+            if (is_int($post['category'])) {
+                $query = 'select id from categories where id = ' . $post['category'];
+                $resultArray = mysql_query($query);
+                $dataArray = mysql_fetch_assoc($resultArray);
+                if (empty($dataArray['id'])) {
+                    $result['code'] = '162';
+                    $result['message'] = 'Category does not exist.';
+                    return json_encode($result);
+                }
             }
             if(empty($post['price'])){
                 $result['code'] = '56';
